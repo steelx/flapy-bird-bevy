@@ -25,7 +25,6 @@ fn main() {
         .add_plugin(AnimationPlugin)
         .add_startup_system(setup.system())
         .add_startup_system_to_stage(startup_stage::POST_STARTUP, spawn_player.system())
-        .add_system(tick_timer_system.system())
         .run();
 }
 
@@ -33,7 +32,4 @@ fn setup(
     mut commands: Commands,
 ) {
     commands.spawn(Camera2dComponents::default());
-    commands.insert_resource(TickTimer(
-        Timer::new(Duration::from_millis(150. as u64), true)
-    ));
 }

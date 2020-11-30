@@ -3,11 +3,6 @@ use crate::components::Velocity;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Player;
-pub struct TickTimer(pub Timer);
-
-pub fn tick_timer_system(time: Res<Time>, mut timer: ResMut<TickTimer>) {
-    timer.0.tick(time.delta_seconds);
-}
 
 pub fn spawn_player (
     mut commands: Commands,
@@ -29,6 +24,7 @@ pub fn spawn_player (
             },
             ..Default::default()
         })
+        .with(Timer::from_seconds(0.1, true))
         .with(Player)
         .with(Velocity(0.0))
         .with(Animations {
@@ -46,7 +42,7 @@ pub fn spawn_player (
                         },
                         AnimationFrame {
                             index: 2,
-                            time: 0.3,
+                            time: 0.1,
                         },
                         AnimationFrame {
                             index: 3,
