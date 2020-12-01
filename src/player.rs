@@ -1,5 +1,5 @@
-use crate::prelude::*;
 use crate::components::Velocity;
+use crate::prelude::*;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Player;
@@ -16,7 +16,7 @@ pub fn spawn_player (
     commands
         .spawn(SpriteSheetComponents {
             texture_atlas: texture_atlas_handle,
-            transform: Transform::from_scale(Vec3::splat(6.0)),
+            transform: Transform::from_scale(Vec3::splat(2.0)),
             draw: Draw {
                 is_transparent: true,
                 is_visible: true,

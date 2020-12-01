@@ -10,7 +10,6 @@ pub mod prelude {
 
 use prelude::*;
 use bevy::app::startup_stage;
-use std::time::Duration;
 
 fn main() {
     App::build()
