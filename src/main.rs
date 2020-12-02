@@ -4,8 +4,10 @@ mod player;
 
 pub mod prelude {
     pub use bevy::prelude::*;
+    pub const GRAVITY: f32 = 40.0;
     pub use crate::animations::*;
     pub use crate::player::*;
+    pub use crate::components::*;
 }
 
 use prelude::*;
@@ -13,7 +15,7 @@ use bevy::app::startup_stage;
 
 fn main() {
     App::build()
-        .add_resource(ClearColor(Color::hex("003049").unwrap()))
+        // .add_resource(ClearColor(Color::hex("003049").unwrap()))
         .add_resource(WindowDescriptor {
             title: "Flappy Bevy!".to_string(),
             width: 800,
@@ -24,6 +26,8 @@ fn main() {
         .add_plugin(AnimationPlugin)
         .add_startup_system(setup.system())
         .add_startup_system_to_stage(startup_stage::POST_STARTUP, spawn_player.system())
+        .add_system(gravity_and_move.system())
+        .add_system(flap.system())
         .run();
 }
 
