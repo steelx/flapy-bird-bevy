@@ -11,7 +11,6 @@ pub mod prelude {
 }
 
 use prelude::*;
-use bevy::app::startup_stage;
 
 fn main() {
     App::build()
@@ -24,10 +23,8 @@ fn main() {
         })
         .add_plugins(DefaultPlugins)
         .add_plugin(AnimationPlugin)
+        .add_plugin(PlayerPlugin)
         .add_startup_system(setup.system())
-        .add_startup_system_to_stage(startup_stage::POST_STARTUP, spawn_player.system())
-        .add_system(gravity_and_move.system())
-        .add_system(flap.system())
         .run();
 }
 

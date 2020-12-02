@@ -1,5 +1,7 @@
 use crate::prelude::*;
 
+use super::player::Player;
+
 pub fn gravity_and_move(time: Res<Time>, mut query: Query<With<Player, (&mut Velocity, &mut Transform)>>) {
 
     query.iter_mut().for_each(|(mut velocity, mut transform)| {
