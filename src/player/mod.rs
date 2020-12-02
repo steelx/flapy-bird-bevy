@@ -6,6 +6,7 @@ use bevy::app::startup_stage;
 use player::*;
 use gravity::*;
 
+pub use player::Player;
 pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
