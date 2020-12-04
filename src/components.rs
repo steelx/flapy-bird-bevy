@@ -1,3 +1,3 @@
-// use crate::prelude::*;
+use crate::prelude::*;
 
-pub struct Velocity (pub f32);
+pub struct Velocity (pub Vec2);
