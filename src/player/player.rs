@@ -24,7 +24,7 @@ pub fn spawn_player (
             },
             ..Default::default()
         })
-        .with(Timer::from_seconds(0.1, true))
+        .with(Timer::from_seconds(0.1, true))//animation timer
         .with(Player)
         .with(Velocity(0.0))
         .with(Animations {
@@ -33,35 +33,35 @@ pub fn spawn_player (
                     current_frame: 0,
                     frames: vec![
                         AnimationFrame {
-                            index: 17*30+0,
+                            index: 17*32+0,
                             time: 0.1,
                         },
                         AnimationFrame {
-                            index: 17*30+1,
+                            index: 17*32+1,
                             time: 0.1,
                         },
                         AnimationFrame {
-                            index: 17*30+2,
+                            index: 17*32+2,
                             time: 0.1,
                         },
                         AnimationFrame {
-                            index: 17*30+3,
+                            index: 17*32+3,
                             time: 0.1,
                         },
                         AnimationFrame {
-                            index: 17*30+4,
+                            index: 17*32+4,
                             time: 0.1,
                         },
                         AnimationFrame {
-                            index: 17*30+5,
+                            index: 17*32+5,
                             time: 0.1,
                         },
                         AnimationFrame {
-                            index: 17*30+6,
+                            index: 17*32+6,
                             time: 0.1,
                         },
                         AnimationFrame {
-                            index: 17*30+7,
+                            index: 17*32+7,
                             time: 0.1,
                         },
                     ],

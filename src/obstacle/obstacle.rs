@@ -1,24 +1,11 @@
+// use rand::{Rng, thread_rng};
+
 use crate::prelude::*;
-use rand::prelude::ThreadRng;
-use rand::Rng;
 
 /// Obstacle
-struct Obstacle {
-    x: i32,
-    y: i32,
-    size: i32,//size defines length of the obstacle thru which player can pass
-}
+pub struct Obstacle;
 
-impl Obstacle {
-    fn new(x: i32, score: i32) -> Self {
-        let mut rng: ThreadRng = rand::thread_rng();
-        Obstacle {
-            x,
-            y: rng.gen_range(10, 40),
-            size: i32::max(2, 20 - score),
-        }
-    }
-}
+pub struct SpawnTimer(pub Timer);
 
 // pub fn hit_obstacle(obstacle: Query<(&Obstacle, &Transform)>, player_q: Query<With<Player, &Transform>>) -> bool {
 //     let player = player_q.iter().next().unwrap();
@@ -31,13 +18,60 @@ impl Obstacle {
 
 pub fn spawn_obstacle(
     mut commands: Commands,
+    time: Res<Time>,
+    mut spawn_timer: ResMut<SpawnTimer>,
+    windows: Res<Windows>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
+    spawn_timer.0.tick(time.delta_seconds);
+    if !spawn_timer.0.finished {
+        return;
+    }
+
+    let window = windows.get_primary().unwrap();
+    // let mut rng = rand::thread_rng();
+
+    let score = time.delta_seconds;
+    let half_width = window.width() as f32 * 0.5;
+    let half_height = window.height() as f32 * 0.5;
+    let x: f32 = half_width;
+    // let height: f32 = rng.gen_range(10., 40.);
+    let gap_size = f32::max(100., half_height - score);
+
+
+    //bottom
     commands
         .spawn(SpriteComponents {
-            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
-            material: materials.add(Color::hex("22223b").unwrap().into()),
+            sprite: Sprite::new(Vec2::new(20.0, half_height)),
+            material: materials.add(ColorMaterial::from(Color::hex("1affff").unwrap())),
+            transform: Transform{
+                translation: Vec3::new(
+                    x,
+                    -(half_height + gap_size),
+                    0.2,
+                ),
+                scale: Vec3::splat(3.0),
+                ..Default::default()
+            },
             ..Default::default()
         })
-        .with(Obstacle::new(50, 0));
+        .with(Obstacle);
+
+    //top
+    commands
+        .spawn(SpriteComponents {
+            sprite: Sprite::new(Vec2::new(20.0, half_height)),
+            material: materials.add(ColorMaterial::from(Color::hex("1affff").unwrap())),
+            transform: Transform{
+                translation: Vec3::new(
+                    x,
+                    half_height + gap_size,
+                    0.2,
+                ),
+                scale: Vec3::splat(3.0),
+                ..Default::default()
+            },
+            ..Default::default()
+        })
+        .with(Obstacle);
 }
