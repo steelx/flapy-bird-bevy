@@ -11,8 +11,11 @@ pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
+            .add_resource(PlayerMoveTimer(Timer::from_seconds(0.3, true)))
             .add_startup_system_to_stage(startup_stage::POST_STARTUP, spawn_player.system())
             .add_system(gravity_and_move.system())
             .add_system(jump.system());
     }
 }
+
+pub struct PlayerMoveTimer(pub Timer);
