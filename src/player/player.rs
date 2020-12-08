@@ -2,35 +2,13 @@ use crate::components::Velocity;
 use crate::prelude::*;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub struct Player {
-    pub camera_distance: f32,
-    pub camera_pitch: f32,
-    pub camera_entity: Option<Entity>,
-}
-
-impl Default for Player {
-    fn default() -> Self {
-        Player {
-            camera_distance: 20.,
-            camera_pitch: 30.0f32.to_radians(),
-            camera_entity: None,
-        }
-    }
-}
-
-pub struct PlayerCamera;
+pub struct Player;
 
 pub fn spawn_player (
     mut commands: Commands,
     material_storage: Res<ColorMaterialStorage>,
 ) {
-    // Spawn camera and player, set entity for camera on player.
-    let camera_entity = commands
-        .spawn(Camera2dComponents::default())
-        .with(PlayerCamera)
-        .current_entity();
-
-    let player_entity = commands
+    commands
         .spawn(SpriteSheetComponents {
             texture_atlas: material_storage.texture_atlas.clone(),
             transform: Transform::from_scale(Vec3::splat(2.0)),
@@ -42,10 +20,7 @@ pub fn spawn_player (
             ..Default::default()
         })
         .with(Timer::from_seconds(0.1, true))//animation timer
-        .with(Player {
-            camera_entity,
-            ..Default::default()
-        })
+        .with(Player)
         .with(Velocity(Vec2::zero()))
         .with(Animations {
             animations: vec![
@@ -101,10 +76,5 @@ pub fn spawn_player (
                 },
             ],
             current_animation: 0,
-        })
-        .current_entity();
-
-    commands
-        // Append camera to player as child.
-        .push_children(player_entity.unwrap(), &[camera_entity.unwrap()]);
+        });
 }
