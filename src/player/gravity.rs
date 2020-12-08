@@ -29,7 +29,6 @@ pub fn gravity_and_move(
             // let cam_pos = Vec3::new(x, 0., 0.).normalize() * player.camera_distance;
             if let Ok(mut cam_trans) = camera_query.get_mut(camera_entity) {
                 cam_trans.translation.set_x(x);
-                cam_trans.translation.set_x(y);
             }
         }
     });

@@ -22,13 +22,8 @@ pub struct PlayerCamera;
 
 pub fn spawn_player (
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+    material_storage: Res<ColorMaterialStorage>,
 ) {
-    let texture_handle = asset_server.load("pixels16x16.png");
-    let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(16.0, 16.0), 32, 32);
-    let texture_atlas_handle = texture_atlases.add(texture_atlas);
-
     // Spawn camera and player, set entity for camera on player.
     let camera_entity = commands
         .spawn(Camera2dComponents::default())
@@ -37,7 +32,7 @@ pub fn spawn_player (
 
     let player_entity = commands
         .spawn(SpriteSheetComponents {
-            texture_atlas: texture_atlas_handle,
+            texture_atlas: material_storage.texture_atlas.clone(),
             transform: Transform::from_scale(Vec3::splat(2.0)),
             draw: Draw {
                 is_transparent: true,
