@@ -19,7 +19,6 @@ pub fn gravity_and_move(
 }
 
 pub fn jump(
-    time: Res<Time>,
     keyboard_input: Res<Input<KeyCode>>,
     mut velocityz: Query<&mut Velocity>,
     players: Query<(Entity, &Player)>,
