@@ -5,7 +5,7 @@ mod obstacle;
 
 pub mod prelude {
     pub use bevy::prelude::*;
-    pub const GRAVITY: f32 = 40.0;
+    pub const GRAVITY: f32 = 75.0;
     pub use crate::animations::*;
     pub use crate::player::*;
     pub use crate::obstacle::*;
