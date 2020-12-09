@@ -9,6 +9,7 @@ use gravity::*;
 use camera::*;
 
 pub struct PlayerPlugin;
+pub use player::Player;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut AppBuilder) {
