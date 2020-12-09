@@ -5,6 +5,9 @@ use crate::prelude::*;
 
 /// Obstacle
 pub struct Obstacle;
+const SCALE: f32 = 3.0;
+const TILE_HEIGHT: f32 = 128.0;
+const TILE_WIDTH: f32 = 32.0;
 
 pub struct ObstacleSettings {
     // distance from upper and lower pipe, in precentage
@@ -43,15 +46,17 @@ pub fn spawn_obstacle(
     }
 
     let mut rng = rand::thread_rng();
-    let mut new_center_pos = obstacle_settings.last_pos - rng.gen_range(-obstacle_settings.max_center_delta, obstacle_settings.max_center_delta);
+    let mut new_center_pos = obstacle_settings.last_pos - rng.gen_range(
+        -obstacle_settings.max_center_delta, obstacle_settings.max_center_delta
+    );
 
     let window = windows.get_primary().unwrap();
     let win_height = window.height() as f32;
     let win_width = window.width() as f32;
 
     // This is the extent from the center in Y, a pipe can go maximum, until it flies in the air
-    const SCALE: f32 = 3.0;
-    let clamp_range = (win_height - (SCALE * 128.0)) / win_height;
+    let clamp_range = (win_height - (SCALE * TILE_HEIGHT)) / win_height;
+    println!("clamp_range {} last {} new {}", clamp_range, obstacle_settings.last_pos, new_center_pos);
 
     // Clamp func seem to be nightly only for now
     new_center_pos = new_center_pos.min(clamp_range);
@@ -62,8 +67,8 @@ pub fn spawn_obstacle(
     // to world units
     new_center_pos *= win_height * 0.5;//half height
 
-    let obstacle_offset_y = (SCALE * 128.0) * 0.5;
-    let obstacle_offset_x = (SCALE * 32.0) * 0.5;
+    let obstacle_offset_y = (SCALE * TILE_HEIGHT) * 0.5;
+    let obstacle_offset_x = (SCALE * TILE_WIDTH) * 0.5;
 
     let mut obstacle_delta = rng.gen_range(
         obstacle_settings.min_pipe_distance,
