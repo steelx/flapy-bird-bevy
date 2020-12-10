@@ -17,7 +17,6 @@ impl Plugin for PlayerPlugin {
         app
             .add_plugin(CameraPlugin)
             .add_startup_system_to_stage(startup_stage::POST_STARTUP, spawn_player_system)
-            .add_system(gravity_and_move_system)
             .add_system(jump_system);
     }
 }
