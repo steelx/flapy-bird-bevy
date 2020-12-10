@@ -32,16 +32,16 @@ impl ObstacleSettings {
 
 pub struct SpawnTimer(pub Timer);
 
-pub fn spawn_obstacle(
-    mut commands: Commands,
+pub fn spawn_obstacle_system (
+    commands: &mut Commands,
     time: Res<Time>,
+    windows: Res<Windows>,
     mut spawn_timer: ResMut<SpawnTimer>,
     mut obstacle_settings: ResMut<ObstacleSettings>,
-    windows: Res<Windows>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    spawn_timer.0.tick(time.delta_seconds);
-    if !spawn_timer.0.finished {
+    spawn_timer.0.tick(time.delta_seconds());
+    if !spawn_timer.0.finished() {
         return;
     }
 
@@ -83,14 +83,9 @@ pub fn spawn_obstacle(
 
     //bottom
     commands
-        .spawn(SpriteComponents {
+        .spawn(SpriteBundle {
             sprite: Sprite::new(obstacle_size),
             material: materials.add(ColorMaterial::from(Color::hex("1a00fa").unwrap())),
-            draw: Draw {
-                is_transparent: true,
-                is_visible: true,
-                render_commands: Vec::new(),
-            },
             transform: Transform{
                 translation: Vec3::new(
                     obstacle_settings.last_pos_x, -obstacle_offset_y + new_center_pos - obstacle_delta, 3.0
@@ -105,7 +100,7 @@ pub fn spawn_obstacle(
 
     //top
     commands
-        .spawn(SpriteComponents {
+        .spawn(SpriteBundle {
             sprite: Sprite::new(obstacle_size),
             material: materials.add(ColorMaterial::from(Color::hex("1affff").unwrap())),
             transform: Transform{

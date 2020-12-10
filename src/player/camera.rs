@@ -6,16 +6,16 @@ pub struct CameraPlugin;
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
-            .add_startup_system(setup_system.system())
-            .add_system(camera_follow_system.system());
+            .add_startup_system(setup_system)
+            .add_system(camera_follow_system);
     }
 }
 
-#[derive(Debug, Default, Properties)]
+#[derive(Debug, Default)]
 pub struct Camera;
 
-fn setup_system(mut commands: Commands, mut windows: ResMut<Windows>) {
-    commands.spawn(Camera2dComponents::default()).with(Camera);
+fn setup_system(commands: &mut Commands, mut windows: ResMut<Windows>) {
+    commands.spawn(Camera2dBundle::default()).with(Camera);
 
     // Set cursor as hidden, replaced by crosshair
     let window = windows.get_primary_mut().unwrap();
@@ -23,8 +23,8 @@ fn setup_system(mut commands: Commands, mut windows: ResMut<Windows>) {
 }
 
 fn camera_follow_system(
-    mut query1: Query<With<Camera, &mut Transform>>,
-    query2: Query<With<Player, &Transform>>,
+    mut query1: Query<&mut Transform, With<Camera>>,
+    query2: Query<&Transform, With<Player>>,
 ) {
     let smooth_speed: f32 = 0.125;
     let offset = Vec2::new(0., 2.);

@@ -1,22 +1,19 @@
 use crate::components::Velocity;
 use crate::prelude::*;
+use bevy_rapier2d::rapier::dynamics::RigidBodyBuilder;
+use bevy_rapier2d::rapier::geometry::ColliderBuilder;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Player;
 
-pub fn spawn_player (
-    mut commands: Commands,
+pub fn spawn_player_system (
+    commands: &mut Commands,
     material_storage: Res<ColorMaterialStorage>,
 ) {
-    commands
-        .spawn(SpriteSheetComponents {
+    let player_entity = commands
+        .spawn(SpriteSheetBundle {
             texture_atlas: material_storage.texture_atlas.clone(),
             transform: Transform::from_scale(Vec3::splat(2.0)),
-            draw: Draw {
-                is_transparent: true,
-                is_visible: true,
-                render_commands: Vec::new(),
-            },
             ..Default::default()
         })
         .with(Timer::from_seconds(0.1, true))//animation timer
@@ -76,5 +73,11 @@ pub fn spawn_player (
                 },
             ],
             current_animation: 0,
-        });
+        })
+        .current_entity().unwrap();
+
+    let body = RigidBodyBuilder::new_dynamic().user_data(player_entity.to_bits() as u128);
+    let collider = ColliderBuilder::ball(1.0);
+
+    commands.insert(player_entity, (body, collider));
 }

@@ -19,7 +19,7 @@ pub struct Animations {
 
 impl Plugin for AnimationPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app.add_system(animate_system.system());
+        app.add_system(animate_system);
     }
 }
 
@@ -33,7 +33,7 @@ fn animate_system(
     query
         .iter_mut()
         .for_each(|(mut timer, mut sprite, mut animations)| {
-            if timer.finished {
+            if timer.finished() {
                 let current_animation_index = animations.current_animation;
                 match animations.animations.get_mut(current_animation_index as usize) {
                     Some(animation) => {
@@ -46,7 +46,8 @@ fn animate_system(
                             .frames
                             .get(animation.current_frame as usize)
                             .unwrap();
-                        timer.duration = frame_data.time;
+
+                        timer.set_duration(frame_data.time);
 
                         if let Some(frame) = animation.frames.get(animation.current_frame as usize) {
                             sprite.index = frame.index as u32;

@@ -4,6 +4,7 @@ mod camera;
 
 use crate::prelude::*;
 use bevy::app::startup_stage;
+
 use player::*;
 use gravity::*;
 use camera::*;
@@ -15,8 +16,8 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
             .add_plugin(CameraPlugin)
-            .add_startup_system_to_stage(startup_stage::POST_STARTUP, spawn_player.system())
-            .add_system(gravity_and_move.system())
-            .add_system(jump.system());
+            .add_startup_system_to_stage(startup_stage::POST_STARTUP, spawn_player_system)
+            .add_system(gravity_and_move_system)
+            .add_system(jump_system);
     }
 }

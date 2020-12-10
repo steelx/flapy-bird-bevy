@@ -15,6 +15,7 @@ pub mod prelude {
 
 use prelude::*;
 use std::collections::HashMap;
+use bevy_rapier2d::physics::RapierPhysicsPlugin;
 
 fn main() {
     App::build()
@@ -25,18 +26,19 @@ fn main() {
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)
+        .add_plugin(RapierPhysicsPlugin)
         .add_plugin(AnimationPlugin)
         .add_plugin(PlayerPlugin)
         .add_plugin(ObstaclePlugin)
-        .add_startup_system(setup.system())
-        .add_system(despawn::offscreen_deletion.system())
+        .add_startup_system(setup_system)
+        .add_system(despawn::offscreen_deletion_system)
         .run();
 }
 
-fn setup(
-    mut commands: Commands,
-    mut materials: ResMut<Assets<ColorMaterial>>,
+fn setup_system(
+    commands: &mut Commands,
     asset_server: Res<AssetServer>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
 ) {
 

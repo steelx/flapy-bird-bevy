@@ -11,6 +11,6 @@ impl Plugin for ObstaclePlugin {
         app
             .add_resource(SpawnTimer(Timer::from_seconds(1., true)))
             .add_resource(ObstacleSettings::new())
-            .add_system(spawn_obstacle.system());
+            .add_system(spawn_obstacle_system);
     }
 }
