@@ -1,4 +1,4 @@
-mod components;
+mod state;
 mod animations;
 mod player;
 mod obstacle;
@@ -10,12 +10,13 @@ pub mod prelude {
     pub use crate::animations::*;
     pub use crate::player::*;
     pub use crate::obstacle::*;
-    pub use crate::components::*;
+    pub use crate::state::*;
 }
 
 use prelude::*;
 use std::collections::HashMap;
-use bevy_rapier2d::physics::RapierPhysicsPlugin;
+use bevy_rapier2d::physics::{RapierPhysicsPlugin, RapierConfiguration};
+use bevy_rapier2d::na::Vector2;
 
 fn main() {
     App::build()
@@ -27,6 +28,10 @@ fn main() {
         })
         .add_plugins(DefaultPlugins)
         .add_plugin(RapierPhysicsPlugin)
+        .add_resource(RapierConfiguration {
+            gravity: Vector2::zeros(),
+            ..Default::default()
+        })
         .add_plugin(AnimationPlugin)
         .add_plugin(PlayerPlugin)
         .add_plugin(ObstaclePlugin)
@@ -45,7 +50,11 @@ fn setup_system(
     let texture_handle = asset_server.load("pixels16x16.png");
     let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(16.0, 16.0), 32, 32);
     //ColorMaterialStorage need to fix texture_atlas to able to insert to a HashMap
-    let mut material_storage = ColorMaterialStorage{ materials: HashMap::new(), texture_atlas: texture_atlases.add(texture_atlas) };
+    let mut material_storage = RunState {
+        materials: HashMap::new(),
+        texture_atlas: texture_atlases.add(texture_atlas),
+        player: None,
+    };
     material_storage.materials.insert(
         "wall_color".to_string(),
         materials.add(Color::hex("ffe8d6").unwrap().into()),

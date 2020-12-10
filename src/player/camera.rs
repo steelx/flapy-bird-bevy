@@ -14,12 +14,12 @@ impl Plugin for CameraPlugin {
 #[derive(Debug, Default)]
 pub struct Camera;
 
-fn setup_system(commands: &mut Commands, mut windows: ResMut<Windows>) {
+fn setup_system(commands: &mut Commands) {
     commands.spawn(Camera2dBundle::default()).with(Camera);
 
     // Set cursor as hidden, replaced by crosshair
-    let window = windows.get_primary_mut().unwrap();
-    window.set_cursor_visibility(false);
+    // let window = windows.get_primary_mut().unwrap();
+    // window.set_cursor_visibility(false);
 }
 
 fn camera_follow_system(
