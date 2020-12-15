@@ -62,9 +62,10 @@ pub fn spawn_obstacle_system (
 
             let body = RigidBodyBuilder::new_dynamic()
                 .translation(event.x, event.y)
+                .lock_translations()
                 .user_data(entity.to_bits() as u128);
 
-            let collider = ColliderBuilder::cuboid(TILE_WIDTH, TILE_HEIGHT);
+            let collider = ColliderBuilder::cuboid((event.size.x*SCALE)*0.5, (event.size.y*SCALE)*0.5);
             commands.insert(entity, (body, collider));
         });
 }
