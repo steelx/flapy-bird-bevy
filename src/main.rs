@@ -3,7 +3,7 @@ mod animations;
 mod player;
 mod obstacle;
 mod despawn;
-mod contact;
+mod contacts;
 mod components;
 
 pub mod prelude {
@@ -39,6 +39,7 @@ fn main() {
         .add_plugin(ObstaclePlugin)
         .add_startup_system(setup_system)
         .add_system(despawn::offscreen_deletion_system)
+        .add_system(contacts::contacts_system)
         .run();
 }
 
