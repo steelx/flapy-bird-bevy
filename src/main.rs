@@ -3,6 +3,8 @@ mod animations;
 mod player;
 mod obstacle;
 mod despawn;
+mod contact;
+mod components;
 
 pub mod prelude {
     pub use bevy::prelude::*;

@@ -7,6 +7,7 @@ use bevy_rapier2d::na::Vector2;
 pub struct Player {
     pub rotation_speed: f32,
     pub thrust: f32,
+    pub life: u32,
 }
 
 pub fn spawn_player_system (
@@ -21,6 +22,7 @@ pub fn spawn_player_system (
         })
         .with(Timer::from_seconds(0.1, true))//animation timer
         .with(Player {
+            life: 100,
             rotation_speed: 0.1,
             thrust: 60.0,
         })
