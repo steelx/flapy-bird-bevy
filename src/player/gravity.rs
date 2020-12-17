@@ -1,33 +1,48 @@
 use crate::prelude::*;
 
 use super::player::Player;
+use crate::state::RunState;
 
-pub fn gravity_and_move(
+pub fn gravity_and_move_system(
     time: Res<Time>,
-    mut player_query: Query<With<Player, (&mut Velocity, &mut Transform)>>,
+    mut player_query: Query<(&mut Velocity, &mut Transform), With<Player>>,
 ) {
     player_query.iter_mut().for_each(|(mut velocity, mut player_position)| {
-        *velocity.0.y_mut() -= GRAVITY * time.delta_seconds * 2.75;
+        let delta = time.delta_seconds();
+        velocity.0.y -= GRAVITY * delta * 2.75_f32;
 
-        let speed: f32 = 1.25;
-        let x = player_position.translation.x() + speed;
-        let y = player_position.translation.y() + velocity.0.y() * time.delta_seconds;
+        let x = player_position.translation.x + velocity.0.x * delta;
+        let y = player_position.translation.y + velocity.0.y * delta;
 
-        player_position.translation.set_y(y);
-        player_position.translation.set_x(x);
+        player_position.translation.y = y;
+        player_position.translation.x = x;
     });
 }
 
-pub fn jump(
+pub fn input_system(
     keyboard_input: Res<Input<KeyCode>>,
+    runstate: Res<RunState>,
     mut velocityz: Query<&mut Velocity>,
-    players: Query<(Entity, &Player)>,
+    query: Query<Mut<Player>>,
 ) {
-    if keyboard_input.just_pressed(KeyCode::Space) {
-        if let Some((entity, _player)) = players.iter().next() {
-            let mut velocity = velocityz.get_mut(entity).expect("Could not find player entity");
-            // *velocity.0.y_mut() -= GRAVITY * time.delta_seconds;
-            velocity.0.set_y(GRAVITY*4.);
-        }
+    let player_entity = runstate.player.unwrap();
+
+    let mut thrust = 0;
+
+    if keyboard_input.pressed(KeyCode::Space) {
+        thrust += 1
+    }
+    // if keyboard_input.pressed(KeyCode::A) {
+    //     rotation += 1
+    // }
+    // if keyboard_input.pressed(KeyCode::D) {
+    //     rotation -= 1
+    // }
+
+    if thrust != 0 {
+        let player = query.get_component::<Player>(player_entity).unwrap();
+        let mut velocity = velocityz.get_mut(player_entity).expect("Could not find player Velocity");
+        velocity.0.y = GRAVITY * thrust as f32;
+        velocity.0.x = player.thrust;
     }
 }

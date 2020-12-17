@@ -1,5 +1,4 @@
 use rand::Rng;
-use super::OffsceenDeletion;
 
 use crate::prelude::*;
 
@@ -30,20 +29,52 @@ impl ObstacleSettings {
     }
 }
 
+
 pub struct SpawnTimer(pub Timer);
 
-pub fn spawn_obstacle(
-    mut commands: Commands,
+pub fn spawn_obstacle_system (
+    commands: &mut Commands,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+    events: Res<Events<ObstacleSpawnEvent>>,
+) {
+    events
+        .iter_current_update_events()
+        .for_each(|event| {
+            //top pipe
+            let entity = commands
+                .spawn(SpriteBundle {
+                    sprite: Sprite::new(event.size),
+                    transform: Transform {
+                        translation: Vec3::new(event.x, event.y, event.z),
+                        scale: Vec3::splat(SCALE),
+                        ..Default::default()
+                    },
+                    material: materials.add(ColorMaterial::from(Color::hex("1a00fa").unwrap())),
+                    ..Default::default()
+                })
+                .with(Obstacle)
+                .with(Damage { value: 50 })
+                .current_entity()
+                .unwrap();
+
+            commands.insert(entity, ());
+        });
+}
+
+pub fn setup_obstacle_system(
     time: Res<Time>,
+    windows: Res<Windows>,
     mut spawn_timer: ResMut<SpawnTimer>,
     mut obstacle_settings: ResMut<ObstacleSettings>,
-    windows: Res<Windows>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
+    mut obstacle_spawn_events: ResMut<Events<ObstacleSpawnEvent>>,
+    obstacles: Query<&Obstacle>,
 ) {
-    spawn_timer.0.tick(time.delta_seconds);
-    if !spawn_timer.0.finished {
+    let n_obstacles = obstacles.iter().count();
+    spawn_timer.0.tick(time.delta_seconds());
+    if !spawn_timer.0.finished() || n_obstacles > 20  {
         return;
     }
+
 
     let mut rng = rand::thread_rng();
     let mut new_center_pos = obstacle_settings.last_pos - rng.gen_range(
@@ -56,7 +87,6 @@ pub fn spawn_obstacle(
 
     // This is the extent from the center in Y, a pipe can go maximum, until it flies in the air
     let clamp_range = (win_height - (SCALE * TILE_HEIGHT)) / win_height;
-    println!("clamp_range {} last {} new {}", clamp_range, obstacle_settings.last_pos, new_center_pos);
 
     // Clamp func seem to be nightly only for now
     new_center_pos = new_center_pos.min(clamp_range);
@@ -79,44 +109,12 @@ pub fn spawn_obstacle(
     let x_pos = win_width * 0.5 + obstacle_offset_x;
     obstacle_settings.last_pos_x += x_pos;
 
-    let obstacle_size = Vec2::new(32., 128.);
+    let obstacle_size = Vec2::new(TILE_WIDTH, TILE_HEIGHT);
 
-    //bottom
-    commands
-        .spawn(SpriteComponents {
-            sprite: Sprite::new(obstacle_size),
-            material: materials.add(ColorMaterial::from(Color::hex("1a00fa").unwrap())),
-            draw: Draw {
-                is_transparent: true,
-                is_visible: true,
-                render_commands: Vec::new(),
-            },
-            transform: Transform{
-                translation: Vec3::new(
-                    obstacle_settings.last_pos_x, -obstacle_offset_y + new_center_pos - obstacle_delta, 3.0
-                ),
-                scale: Vec3::splat(SCALE),
-                ..Default::default()
-            },
-            ..Default::default()
-        })
-        .with(Obstacle)
-        .with(OffsceenDeletion);
-
-    //top
-    commands
-        .spawn(SpriteComponents {
-            sprite: Sprite::new(obstacle_size),
-            material: materials.add(ColorMaterial::from(Color::hex("1affff").unwrap())),
-            transform: Transform{
-                translation: Vec3::new(
-                    obstacle_settings.last_pos_x, obstacle_offset_y + new_center_pos + obstacle_delta, 3.0
-                ),
-                scale: Vec3::splat(SCALE),
-                ..Default::default()
-            },
-            ..Default::default()
-        })
-        .with(Obstacle)
-        .with(OffsceenDeletion);
+    obstacle_spawn_events.send(ObstacleSpawnEvent {
+        size: obstacle_size,
+        x: obstacle_settings.last_pos_x,
+        y: obstacle_offset_y + new_center_pos + obstacle_delta,
+        z: 3.0,
+    });
 }

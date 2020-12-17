@@ -15,8 +15,8 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
             .add_plugin(CameraPlugin)
-            .add_startup_system_to_stage(startup_stage::POST_STARTUP, spawn_player.system())
-            .add_system(gravity_and_move.system())
-            .add_system(jump.system());
+            .add_startup_system_to_stage(startup_stage::POST_STARTUP, spawn_player_system.system())
+            .add_system(gravity_and_move_system.system())
+            .add_system(input_system.system());
     }
 }

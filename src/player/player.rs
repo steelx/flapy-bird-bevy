@@ -1,26 +1,30 @@
 use crate::components::Velocity;
 use crate::prelude::*;
+use crate::state::RunState;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub struct Player;
+pub struct Player {
+    pub rotation_speed: f32,
+    pub thrust: f32,
+    pub life: u32,
+}
 
-pub fn spawn_player (
-    mut commands: Commands,
-    material_storage: Res<ColorMaterialStorage>,
+pub fn spawn_player_system (
+    commands: &mut Commands,
+    mut runstate: ResMut<RunState>,
 ) {
-    commands
-        .spawn(SpriteSheetComponents {
-            texture_atlas: material_storage.texture_atlas.clone(),
+    let player_entity = commands
+        .spawn(SpriteSheetBundle {
+            texture_atlas: runstate.texture_atlas.clone(),
             transform: Transform::from_scale(Vec3::splat(2.0)),
-            draw: Draw {
-                is_transparent: true,
-                is_visible: true,
-                render_commands: Vec::new(),
-            },
             ..Default::default()
         })
         .with(Timer::from_seconds(0.1, true))//animation timer
-        .with(Player)
+        .with(Player {
+            life: 100,
+            rotation_speed: 0.1,
+            thrust: 60.0,
+        })
         .with(Velocity(Vec2::zero()))
         .with(Animations {
             animations: vec![
@@ -76,5 +80,9 @@ pub fn spawn_player (
                 },
             ],
             current_animation: 0,
-        });
+        })
+        .current_entity().unwrap();
+
+    commands.insert(player_entity, ());
+    runstate.player = Some(player_entity);
 }
