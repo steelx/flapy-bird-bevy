@@ -41,7 +41,7 @@ pub fn spawn_obstacle_system (
         .iter_current_update_events()
         .for_each(|event| {
             //top pipe
-            let entity = commands
+            commands
                 .spawn(SpriteBundle {
                     sprite: Sprite::new(event.size),
                     transform: Transform {
@@ -53,11 +53,22 @@ pub fn spawn_obstacle_system (
                     ..Default::default()
                 })
                 .with(Obstacle)
-                .with(Damage { value: 50 })
-                .current_entity()
-                .unwrap();
+                .with(Damage { value: 50 });
 
-            commands.insert(entity, ());
+            //bottom pipe
+            commands
+                .spawn(SpriteBundle {
+                    sprite: Sprite::new(event.size),
+                    transform: Transform {
+                        translation: Vec3::new(event.x, -event.y, event.z),
+                        scale: Vec3::splat(SCALE),
+                        ..Default::default()
+                    },
+                    material: materials.add(ColorMaterial::from(Color::hex("1a00fa").unwrap())),
+                    ..Default::default()
+                })
+                .with(Obstacle)
+                .with(Damage { value: 50 });
         });
 }
 
