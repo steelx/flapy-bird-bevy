@@ -13,6 +13,7 @@ But, Im trying to create a flappy bird with a twist with some hyper rush gamepla
  
  
  ### TODO:
+  - [HIGH PRIORITY] Collision system with events
   - Random enemy (probably a creeper)
   - Upgrade player movement and gravity
   - more animations and background effects
