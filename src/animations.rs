@@ -19,11 +19,13 @@ pub struct Animations {
 
 impl Plugin for AnimationPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app.add_system(animate_system.system());
+        app
+            .add_system(animate_system.system());
     }
 }
 
 fn animate_system(
+    time: Res<Time>,
     mut query: Query<(
         &mut Timer,
         &mut TextureAtlasSprite,
@@ -33,7 +35,8 @@ fn animate_system(
     query
         .iter_mut()
         .for_each(|(mut timer, mut sprite, mut animations)| {
-            if timer.finished() {
+            timer.tick(time.delta_seconds());
+            if timer.just_finished() {
                 let current_animation_index = animations.current_animation;
                 if let Some(animation) = animations.animations.get_mut(current_animation_index as usize) {
                     animation.current_frame += 1;
@@ -41,13 +44,8 @@ fn animate_system(
                         animation.current_frame = 0;
                     }
 
-                    let frame_data = animation
-                        .frames
-                        .get(animation.current_frame as usize)
-                        .unwrap();
-                    timer.set_duration(frame_data.time);
-
                     if let Some(frame) = animation.frames.get(animation.current_frame as usize) {
+                        timer.set_duration(frame.time);
                         sprite.index = frame.index as u32;
                     }
                 }

@@ -64,7 +64,7 @@ pub fn spawn_obstacle_system (
                         scale: Vec3::splat(SCALE),
                         ..Default::default()
                     },
-                    material: materials.add(ColorMaterial::from(Color::hex("1a00fa").unwrap())),
+                    material: materials.add(ColorMaterial::from(Color::hex("1afa00").unwrap())),
                     ..Default::default()
                 })
                 .with(Obstacle)

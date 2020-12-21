@@ -12,11 +12,11 @@ pub mod prelude {
     pub use crate::player::*;
     pub use crate::obstacle::*;
     pub use crate::components::*;
+    pub use crate::state::*;
 }
 
 use prelude::*;
 use std::collections::HashMap;
-use state::RunState;
 
 fn main() {
     App::build()

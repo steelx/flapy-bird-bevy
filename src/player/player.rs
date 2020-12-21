@@ -1,6 +1,5 @@
 use crate::components::Velocity;
 use crate::prelude::*;
-use crate::state::RunState;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Player {
@@ -83,6 +82,6 @@ pub fn spawn_player_system (
         })
         .current_entity().unwrap();
 
-    commands.insert(player_entity, ());
+    // commands.insert(player_entity, ()); //can be used to bind with something
     runstate.player = Some(player_entity);
 }
