@@ -53,6 +53,7 @@ pub fn spawn_obstacle_system (
                     ..Default::default()
                 })
                 .with(Obstacle)
+                .with(Collider{ width: TILE_WIDTH*SCALE, height: TILE_HEIGHT*SCALE })
                 .with(Damage { value: 50 });
 
             //bottom pipe
@@ -68,6 +69,7 @@ pub fn spawn_obstacle_system (
                     ..Default::default()
                 })
                 .with(Obstacle)
+                .with(Collider{ width: TILE_WIDTH*SCALE, height: TILE_HEIGHT*SCALE })
                 .with(Damage { value: 50 });
         });
 }

@@ -24,6 +24,7 @@ pub fn spawn_player_system (
             rotation_speed: 0.1,
             thrust: 60.0,
         })
+        .with(Collider{ width: 16.0, height: 16.0 })
         .with(Velocity(Vec2::zero()))
         .with(Animations {
             animations: vec![
