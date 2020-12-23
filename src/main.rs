@@ -4,7 +4,6 @@ mod player;
 mod obstacle;
 mod despawn;
 mod state;
-mod contacts;
 
 pub mod prelude {
     pub use bevy::prelude::*;
@@ -14,7 +13,7 @@ pub mod prelude {
     pub use crate::obstacle::*;
     pub use crate::components::*;
     pub use crate::state::*;
-    pub use crate::contacts::*;
+    pub use crate::player::contacts::*;
 }
 
 use prelude::*;
@@ -32,7 +31,6 @@ fn main() {
         .add_plugin(AnimationPlugin)
         .add_plugin(PlayerPlugin)
         .add_plugin(ObstaclePlugin)
-        .add_plugin(ContactsPlugin)
         .add_startup_system(setup_system.system())
         .add_system(despawn::offscreen_deletion_system.system())
         .run();
