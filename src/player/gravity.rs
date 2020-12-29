@@ -3,10 +3,25 @@ use crate::prelude::*;
 use super::player::Player;
 use crate::state::RunState;
 
+
 pub fn gravity_and_move_system(
     time: Res<Time>,
+    runstate: Res<RunState>,
+    should_move_events: Res<Events<ShouldMoveEvent>>,
+    mut should_move_reader: Local<EventReader<ShouldMoveEvent>>,
+    query: Query<Mut<Player>>,
     mut player_query: Query<(&mut Velocity, &mut Transform), With<Player>>,
 ) {
+    let player = query.get_component::<Player>(runstate.player.unwrap()).unwrap();
+    if player.life == 0 {
+        return;
+    }
+
+    let mut denied_direction = Vec2::zero();
+
+    for (should_move_event) in should_move_reader.iter(&should_move_events) {
+        denied_direction = should_move_event.denied_direction;
+    }
     player_query.iter_mut().for_each(|(mut velocity, mut player_position)| {
         let delta = time.delta_seconds();
         velocity.0.y -= GRAVITY * delta * 2.75_f32;
@@ -14,8 +29,8 @@ pub fn gravity_and_move_system(
         let x = player_position.translation.x + velocity.0.x * delta;
         let y = player_position.translation.y + velocity.0.y * delta;
 
-        player_position.translation.y = y;
-        player_position.translation.x = x;
+        player_position.translation.y = if denied_direction.y == 0. {y} else { player_position.translation.y+denied_direction.y };
+        player_position.translation.x = if denied_direction.x == 0. {x} else { player_position.translation.x+denied_direction.x };
     });
 }
 

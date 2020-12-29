@@ -54,7 +54,7 @@ pub fn spawn_obstacle_system (
                 })
                 .with(Obstacle)
                 .with(Collider{ width: TILE_WIDTH*SCALE, height: TILE_HEIGHT*SCALE })
-                .with(Damage { value: 50 });
+                .with(Damage { value: 10 });
 
             //bottom pipe
             commands
